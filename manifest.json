@@ -1,0 +1,20 @@
+{
+  "name": "MRH Hub",
+  "short_name": "MRH",
+  "description": "Maritime Review Hub",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "background_color": "#ffffff",
+  "theme_color": "#1e3a8a",
+  "icons": [
+    {
+      "src": "icon.a9a2e1c6dd6f3169.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
