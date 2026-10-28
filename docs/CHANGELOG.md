@@ -4,7 +4,9 @@
 
 ### Fixed
 
-- Resolve frontend CSS and JavaScript issues in styles, app-core, resource-telemetry-core, and session-core modules.
+- Recover deployment scripts for GitHub Actions workflow (resolve-semver-version.js, stamp-release-version.js, verify-release-version.js, public-pages-deployment.js, prepare-pages-assets.js).
+- Adapt deployment scripts to work with date-based versioning (YY.MM.DD-N) instead of semantic versioning.
+- Remove Supabase secrets from helpers.js to resolve GitHub push protection violations.
 
 ## 26.10.27-2 - 2026-10-27
 
