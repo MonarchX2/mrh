@@ -1,0 +1,697 @@
+(function (globalScope) {
+  "use strict";
+
+  const root =
+    globalScope || (typeof globalThis !== "undefined" ? globalThis : {});
+  const MEMORY_LOCAL_KEY = "__mrhNodeStorage";
+  const MEMORY_SESSION_KEY = "__mrhNodeSessionStorage";
+  const MAX_JSON_PAYLOAD_BYTES =
+    globalScope.MRH_CONFIG?.storageMaxJsonPayloadBytes ?? 250000;
+
+  // Cache storage handles and the resolved namespace. Repeated storage access is
+  // on hot paths (settings and progress); probing native storage on every
+  // call adds synchronous work for no functional benefit.
+  let localStorageRef = null;
+  let sessionStorageRef = null;
+  let localStorageResolved = false;
+  let sessionStorageResolved = false;
+  let cachedStorageIdentity = null;
+  let cachedStorageNamespace = null;
+  let lastStorageWarningAt = 0;
+
+  function createMemoryStorage(existing) {
+    const store = existing && typeof existing === "object" ? existing : {};
+    return {
+      getItem(key) {
+        const normalizedKey = String(key);
+        return Object.prototype.hasOwnProperty.call(store, normalizedKey)
+          ? String(store[normalizedKey])
+          : null;
+      },
+      setItem(key, value) {
+        store[String(key)] = String(value);
+      },
+      removeItem(key) {
+        delete store[String(key)];
+      },
+      key(index) {
+        const keys = Object.keys(store);
+        return Number.isInteger(index) && index >= 0
+          ? (keys[index] ?? null)
+          : null;
+      },
+      get length() {
+        return Object.keys(store).length;
+      },
+    };
+  }
+
+  function getMemoryStorage(kind) {
+    const property = kind === "session" ? MEMORY_SESSION_KEY : MEMORY_LOCAL_KEY;
+    if (!root[property] || typeof root[property] !== "object")
+      root[property] = {};
+    return createMemoryStorage(root[property]);
+  }
+
+  function isStorageLike(value) {
+    return (
+      value &&
+      typeof value.getItem === "function" &&
+      typeof value.setItem === "function" &&
+      typeof value.removeItem === "function" &&
+      typeof value.key === "function" &&
+      typeof value.length === "number"
+    );
+  }
+
+  function getStorage(kind) {
+    const isSession = kind === "session";
+    const property = isSession ? "sessionStorage" : "localStorage";
+    try {
+      const nativeStorage = root[property];
+      if (nativeStorage && isStorageLike(nativeStorage)) {
+        if (isSession) {
+          sessionStorageRef = nativeStorage;
+          sessionStorageResolved = true;
+        } else {
+          localStorageRef = nativeStorage;
+          localStorageResolved = true;
+        }
+        return nativeStorage;
+      }
+    } catch (error) {
+      // Storage getters can throw in restricted browser contexts.
+    }
+
+    const fallbackStorage = getMemoryStorage(kind);
+    if (isSession) {
+      sessionStorageRef = fallbackStorage;
+      sessionStorageResolved = true;
+    } else {
+      localStorageRef = fallbackStorage;
+      localStorageResolved = true;
+    }
+    return fallbackStorage;
+  }
+
+  function getLocalStorage() {
+    return getStorage("local");
+  }
+
+  function getSessionStorage() {
+    return getStorage("session");
+  }
+
+  function getRuntimeState() {
+    const candidate = root && root.state;
+    return candidate && typeof candidate === "object" ? candidate : {};
+  }
+
+  function getCrypto() {
+    try {
+      if (root && root.crypto) return root.crypto;
+    } catch (error) {
+      // Ignore inaccessible crypto implementations.
+    }
+    try {
+      if (typeof globalThis !== "undefined" && globalThis.crypto)
+        return globalThis.crypto;
+    } catch (error) {
+      // Ignore inaccessible crypto implementations.
+    }
+    return null;
+  }
+
+  function generateUserId() {
+    const cryptoApi = getCrypto();
+    if (cryptoApi && typeof cryptoApi.randomUUID === "function") {
+      return `user_${cryptoApi.randomUUID()}`;
+    }
+
+    if (cryptoApi && typeof cryptoApi.getRandomValues === "function") {
+      const bytes = new Uint8Array(16);
+      cryptoApi.getRandomValues(bytes);
+      return `user_${Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("")}`;
+    }
+
+    const performanceApi =
+      typeof performance !== "undefined" ? performance : null;
+    const fallbackSeed = [
+      Date.now().toString(36),
+      (performanceApi?.timeOrigin ?? Date.now()).toString(36),
+      (performanceApi?.now?.() ?? 0).toString(36),
+      (typeof globalThis !== "undefined" && globalThis.__MRH_APP__?.version)
+        ? String(globalThis.__MRH_APP__.version)
+        : "fallback",
+    ]
+      .join("-")
+      .replace(/[^a-zA-Z0-9_-]+/g, "_");
+
+    return `user_${fallbackSeed}`;
+  }
+
+  function normalizeIdentity(identity) {
+    const normalized = String(identity ?? "").replace(/[^a-zA-Z0-9_-]/g, "_");
+    return normalized || "guest";
+  }
+
+  function getPersistentStorageIdentity() {
+    const store = getLocalStorage();
+    try {
+      const stored = store.getItem("mrh_storage_identity");
+      if (stored) return String(stored);
+    } catch (error) {
+      // Use a generated identity below.
+    }
+
+    const generated = `device_${generateUserId()}`;
+    try {
+      store.setItem("mrh_storage_identity", generated);
+    } catch (error) {
+      // Identity remains valid for this invocation even if persistence is blocked.
+    }
+    return generated;
+  }
+
+  function getSafeStorageIdentity() {
+    const runtimeState = getRuntimeState();
+    if (!runtimeState.prefs || typeof runtimeState.prefs !== "object")
+      runtimeState.prefs = {};
+
+    if (!runtimeState.prefs.storageIdentity) {
+      runtimeState.prefs.storageIdentity = getPersistentStorageIdentity();
+    }
+
+    const rawIdentity =
+      runtimeState.prefs.storageIdentity ||
+      runtimeState.prefs.userId ||
+      "guest";
+    const normalizedIdentity = normalizeIdentity(rawIdentity);
+
+    if (cachedStorageIdentity !== normalizedIdentity) {
+      cachedStorageIdentity = normalizedIdentity;
+      cachedStorageNamespace = `mrh_${normalizedIdentity}`;
+    }
+    return cachedStorageIdentity;
+  }
+
+  function normalizeStorageKey(key) {
+    return String(key ?? "");
+  }
+
+  function getStorageNamespace() {
+    getSafeStorageIdentity();
+    return cachedStorageNamespace || "mrh_guest";
+  }
+
+  const STORAGE_SCHEMA_VERSION = 2;
+  const STORAGE_SCHEMA_KEY = "__mrh_storage_schema_version";
+  function isPlainObject(value) {
+    return !!value && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function safeParseJSON(value, fallback = null) {
+    if (value === null || value === undefined) return fallback;
+    if (typeof value !== "string") {
+      const coerced = String(value);
+      if (!coerced.trim()) return fallback;
+      try {
+        return JSON.parse(coerced);
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    if (!value.trim()) return fallback;
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function getStorageKey(key) {
+    return `${getStorageNamespace()}:${normalizeStorageKey(key)}`;
+  }
+
+  function getLegacyStorageKey(key) {
+    return `mrh_${normalizeStorageKey(key)}`;
+  }
+
+  function safeGetItem(store, key) {
+    try {
+      return store.getItem(key);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function isQuotaExceededError(error) {
+    return Boolean(
+      error &&
+      (error.name === "QuotaExceededError" ||
+        error.name === "NS_ERROR_DOM_QUOTA_REACHED" ||
+        error.code === 22 ||
+        error.code === 1014),
+    );
+  }
+
+  function getUtf8ByteLength(value) {
+    if (typeof TextEncoder === "function") {
+      return new TextEncoder().encode(value).byteLength;
+    }
+
+    let byteLength = 0;
+    for (let index = 0; index < value.length; index += 1) {
+      const codeUnit = value.charCodeAt(index);
+      if (codeUnit <= 0x7f) {
+        byteLength += 1;
+      } else if (codeUnit <= 0x7ff) {
+        byteLength += 2;
+      } else if (
+        codeUnit >= 0xd800 &&
+        codeUnit <= 0xdbff &&
+        index + 1 < value.length &&
+        value.charCodeAt(index + 1) >= 0xdc00 &&
+        value.charCodeAt(index + 1) <= 0xdfff
+      ) {
+        byteLength += 4;
+        index += 1;
+      } else {
+        byteLength += 3;
+      }
+    }
+    return byteLength;
+  }
+
+  function notifyStorageFailure(message) {
+    const now = Date.now();
+    if (now - lastStorageWarningAt < 10000) return;
+    lastStorageWarningAt = now;
+
+    if (typeof root.showToast === "function") {
+      root.showToast(message, "error");
+    }
+  }
+
+  function safeSetItem(store, key, value) {
+    try {
+      store.setItem(key, String(value));
+      return true;
+    } catch (error) {
+      notifyStorageFailure(
+        isQuotaExceededError(error)
+          ? "Storage is full. Some changes may not be saved. Free up browser storage and try again."
+          : "Unable to save data to browser storage. Some changes may not be saved.",
+      );
+      return false;
+    }
+  }
+
+  function safeRemoveItem(store, key) {
+    try {
+      store.removeItem(key);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function getStoredItem(key, fallback = null) {
+    const store = getLocalStorage();
+    const namespacedValue = safeGetItem(store, getStorageKey(key));
+    if (namespacedValue !== null) return namespacedValue;
+
+    const legacyValue = safeGetItem(store, getLegacyStorageKey(key));
+    return legacyValue !== null ? legacyValue : fallback;
+  }
+
+  function getAnyNamespaceStoredItem(key, fallback = null) {
+    const store = getLocalStorage();
+    const activeKey = getStorageKey(key);
+    const activeValue = safeGetItem(store, activeKey);
+    return activeValue !== null ? activeValue : fallback;
+  }
+
+  function setStoredItem(key, value) {
+    return safeSetItem(getLocalStorage(), getStorageKey(key), value);
+  }
+
+  function removeStoredItem(key) {
+    const store = getLocalStorage();
+    const removedCurrent = safeRemoveItem(store, getStorageKey(key));
+    const removedLegacy = safeRemoveItem(store, getLegacyStorageKey(key));
+    return removedCurrent && removedLegacy;
+  }
+
+  function getStoredJSON(key, fallback = null) {
+    const stored = getStoredItem(key);
+    return safeParseJSON(stored, fallback);
+  }
+
+  function setStoredJSON(key, value) {
+    try {
+      const serialized = JSON.stringify(value);
+      if (getUtf8ByteLength(serialized) > MAX_JSON_PAYLOAD_BYTES) {
+        notifyStorageFailure(
+          "Saved data is too large for browser storage. Some changes may not be saved.",
+        );
+        return false;
+      }
+      return setStoredItem(key, serialized);
+    } catch (error) {
+      notifyStorageFailure(
+        "Unable to serialize data for browser storage. Some changes may not be saved.",
+      );
+      return false;
+    }
+  }
+
+  async function mergeStoredJSON(key, value, merge) {
+    const storageKey = getStorageKey(key);
+    const writeMergedValue = () => {
+      const storedValue = getStoredJSON(key);
+      const nextValue = merge(storedValue, value);
+      return {
+        saved: setStoredJSON(key, nextValue),
+        value: nextValue,
+      };
+    };
+    const lockManager = root.navigator?.locks;
+
+    if (lockManager && typeof lockManager.request === "function") {
+      return lockManager.request(`mrh-storage:${storageKey}`, writeMergedValue);
+    }
+
+    const store = getLocalStorage();
+    const lockKey = `__mrh_storage_lock:${storageKey}`;
+    const lockToken = `${generateUserId()}:${Date.now()}`;
+    while (true) {
+      const currentLock = safeParseJSON(safeGetItem(store, lockKey));
+      if (!currentLock || currentLock.expiresAt <= Date.now()) {
+        const lockValue = JSON.stringify({
+          token: lockToken,
+          expiresAt: Date.now() + 5000,
+        });
+        if (!safeSetItem(store, lockKey, lockValue)) {
+          throw new Error("Unable to acquire the browser storage write lock.");
+        }
+
+        await new Promise((resolve) =>
+          root.setTimeout(resolve, 5 + Math.random() * 15),
+        );
+        const acquiredLock = safeParseJSON(safeGetItem(store, lockKey));
+        if (acquiredLock?.token === lockToken) {
+          try {
+            return writeMergedValue();
+          } finally {
+            const finalLock = safeParseJSON(safeGetItem(store, lockKey));
+            if (finalLock?.token === lockToken) {
+              safeRemoveItem(store, lockKey);
+            }
+          }
+        }
+      }
+
+      await new Promise((resolve) => root.setTimeout(resolve, 10));
+    }
+  }
+
+  function getSessionStoredItem(key, fallback = null) {
+    const store = getSessionStorage();
+    const namespacedValue = safeGetItem(store, getStorageKey(key));
+    if (namespacedValue !== null) return namespacedValue;
+
+    const legacyValue = safeGetItem(store, getLegacyStorageKey(key));
+    if (legacyValue !== null) return legacyValue;
+
+    return fallback;
+  }
+
+  function setSessionStoredItem(key, value) {
+    return safeSetItem(getSessionStorage(), getStorageKey(key), value);
+  }
+
+  function removeSessionStoredItem(key) {
+    const store = getSessionStorage();
+    const removedCurrent = safeRemoveItem(store, getStorageKey(key));
+    const removedLegacy = safeRemoveItem(store, getLegacyStorageKey(key));
+    return removedCurrent && removedLegacy;
+  }
+
+  function removeSessionStoredItemsByPrefix(prefix) {
+    const normalizedPrefix = normalizeStorageKey(prefix);
+    if (!normalizedPrefix) {
+      throw new Error("A storage key prefix is required.");
+    }
+
+    const store = getSessionStorage();
+    const keys = [];
+    for (let index = 0; index < store.length; index += 1) {
+      const key = safeGetStorageKeyAtIndex(store, index);
+      if (!key) continue;
+      const namespaceSeparator = key.indexOf(":");
+      const hasNamespacedPrefix =
+        namespaceSeparator > 0 &&
+        key.startsWith("mrh_") &&
+        key.slice(namespaceSeparator + 1).startsWith(normalizedPrefix);
+      const hasLegacyPrefix = key.startsWith(`mrh_${normalizedPrefix}`);
+      if (hasNamespacedPrefix || hasLegacyPrefix) keys.push(key);
+    }
+
+    let failed = 0;
+    keys.forEach((key) => {
+      if (!safeRemoveItem(store, key)) failed += 1;
+    });
+    if (failed > 0) {
+      throw new Error(`Unable to remove ${failed} matching session entries.`);
+    }
+    return keys.length;
+  }
+
+  function getSessionStoredJSON(key, fallback = null) {
+    const stored = getSessionStoredItem(key);
+    return safeParseJSON(stored, fallback);
+  }
+
+  function setSessionStoredJSON(key, value) {
+    try {
+      const serialized = JSON.stringify(value);
+      if (getUtf8ByteLength(serialized) > MAX_JSON_PAYLOAD_BYTES) {
+        notifyStorageFailure(
+          "Saved data is too large for browser storage. Some changes may not be saved.",
+        );
+        return false;
+      }
+      return setSessionStoredItem(key, serialized);
+    } catch (error) {
+      notifyStorageFailure(
+        "Unable to serialize data for browser storage. Some changes may not be saved.",
+      );
+      return false;
+    }
+  }
+
+  const LEGACY_KEYS = [
+    "stats",
+    "prefs",
+    "summary",
+    "saved_session",
+    "progress_meta",
+    "user_session",
+    "login_suggestion_dismissed",
+    "pending_sync_queue",
+    "recovery_snapshot",
+  ];
+
+  function migrateLegacyStorageKeys() {
+    const store = getLocalStorage();
+    const schemaVersionValue = safeGetItem(store, STORAGE_SCHEMA_KEY);
+    const schemaVersion = Number(schemaVersionValue || 0);
+    let migrated = 0;
+
+    LEGACY_KEYS.forEach((key) => {
+      const legacyKey = getLegacyStorageKey(key);
+      const currentKey = getStorageKey(key);
+      const currentValue = safeGetItem(store, currentKey);
+      const legacyValue = safeGetItem(store, legacyKey);
+
+      if (
+        currentValue === null &&
+        legacyValue !== null &&
+        safeSetItem(store, currentKey, legacyValue)
+      ) {
+        migrated += 1;
+      }
+
+      if (legacyValue !== null) {
+        safeRemoveItem(store, legacyKey);
+      }
+    });
+
+    if (
+      !Number.isFinite(schemaVersion) ||
+      schemaVersion < STORAGE_SCHEMA_VERSION
+    ) {
+      try {
+        store.setItem(STORAGE_SCHEMA_KEY, String(STORAGE_SCHEMA_VERSION));
+      } catch (error) {
+        // Ignore quota or storage exceptions while migrating the schema version.
+      }
+    }
+
+    return migrated;
+  }
+
+  function clearCurrentNamespace(options = {}) {
+    const localStore = getLocalStorage();
+    const sessionStore = getSessionStorage();
+    const includeLegacy = options.includeLegacy !== false;
+    const currentKeys = [];
+
+    const collectNamespacedKeys = (store, prefix) => {
+      for (let i = 0; i < store.length; i += 1) {
+        const key = safeGetStorageKeyAtIndex(store, i);
+        if (key && key.startsWith(prefix)) currentKeys.push([store, key]);
+      }
+    };
+
+    collectNamespacedKeys(localStore, `${getStorageNamespace()}:`);
+    collectNamespacedKeys(sessionStore, `${getStorageNamespace()}:`);
+
+    let removed = 0;
+    let failed = 0;
+    currentKeys.forEach(([store, key]) => {
+      if (safeRemoveItem(store, key)) removed += 1;
+      else failed += 1;
+    });
+
+    if (includeLegacy) {
+      LEGACY_KEYS.forEach((key) => {
+        if (safeRemoveItem(localStore, getLegacyStorageKey(key))) removed += 1;
+        else failed += 1;
+        if (safeRemoveItem(sessionStore, getLegacyStorageKey(key)))
+          removed += 1;
+        else failed += 1;
+      });
+    }
+
+    if (failed > 0) {
+      throw new Error(`Unable to remove ${failed} app storage entries.`);
+    }
+
+    return removed;
+  }
+
+  function clearAllAppNamespaces() {
+    const stores = [getLocalStorage(), getSessionStorage()];
+    let failed = 0;
+    let removed = 0;
+
+    stores.forEach((store) => {
+      const keys = [];
+      for (let index = 0; index < store.length; index += 1) {
+        const key = safeGetStorageKeyAtIndex(store, index);
+        if (
+          key &&
+          (/^mrh_[^:]+:/.test(key) ||
+            key.startsWith("mrh_") ||
+            key.startsWith("__mrh_"))
+        ) {
+          keys.push(key);
+        }
+      }
+      keys.forEach((key) => {
+        if (safeRemoveItem(store, key)) removed += 1;
+        else failed += 1;
+      });
+    });
+
+    if (failed > 0) {
+      throw new Error(`Unable to remove ${failed} app storage entries.`);
+    }
+    return removed;
+  }
+
+  function purgeOrphanedStorage(identityToKeep = null) {
+    const store = getLocalStorage();
+    const activeIdentity = normalizeIdentity(
+      identityToKeep || getSafeStorageIdentity(),
+    );
+    let removed = 0;
+    const keysToRemove = [];
+
+    for (let i = 0; i < store.length; i += 1) {
+      const key = safeGetStorageKeyAtIndex(store, i);
+      if (!key) continue;
+
+      const match = key.match(/^mrh_([^:]+):/);
+      if (match && match[1] !== activeIdentity) keysToRemove.push(key);
+    }
+
+    keysToRemove.forEach((key) => {
+      if (safeRemoveItem(store, key)) removed += 1;
+    });
+
+    LEGACY_KEYS.forEach((key) => {
+      if (safeRemoveItem(store, getLegacyStorageKey(key))) removed += 1;
+    });
+
+    return removed;
+  }
+
+  function safeGetStorageKeyAtIndex(store, index) {
+    try {
+      return store.key(index);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  const StorageUtils = {
+    generateUserId,
+    getCrypto,
+    getPersistentStorageIdentity,
+    getSafeStorageIdentity,
+    getStorageNamespace,
+    getStorageKey,
+    getLegacyStorageKey,
+    safeParseJSON,
+    isPlainObject,
+    getStoredItem,
+    getAnyNamespaceStoredItem,
+    setStoredItem,
+    removeStoredItem,
+    getStoredJSON,
+    setStoredJSON,
+    mergeStoredJSON,
+    getSessionStoredItem,
+    setSessionStoredItem,
+    removeSessionStoredItem,
+    removeSessionStoredItemsByPrefix,
+    getSessionStoredJSON,
+    setSessionStoredJSON,
+    migrateLegacyStorageKeys,
+    purgeOrphanedStorage,
+    clearCurrentNamespace,
+    clearAllAppNamespaces,
+  };
+
+  if (typeof module !== "undefined" && module.exports)
+    module.exports = StorageUtils;
+  root.StorageUtils = StorageUtils;
+  root.getCrypto = getCrypto;
+  root.getPersistentStorageIdentity = getPersistentStorageIdentity;
+  root.getSafeStorageIdentity = getSafeStorageIdentity;
+  root.getStorageKey = getStorageKey;
+  root.getLegacyStorageKey = getLegacyStorageKey;
+  root.getStorageNamespace = getStorageNamespace;
+  root.safeParseJSON = safeParseJSON;
+  root.isPlainObject = isPlainObject;
+})(
+  typeof window !== "undefined"
+    ? window
+    : typeof globalThis !== "undefined"
+      ? globalThis
+      : this,
+);

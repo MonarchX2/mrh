@@ -1,0 +1,28 @@
+backend (main)/*
+backend (stage)/*
+!backend (main)/main.js
+!backend (stage)/main.js
+!backend (main)/appsscript.json
+!backend (stage)/appsscript.json
+!backend (main)/jsrsasign.gs
+!backend (main)/jsrsasign-LICENSE.txt
+!backend (main)/PDFLib.js
+!backend (stage) /PDFLib.js
+old/
+tests/
+!tests/
+!tests/app-core-state-concurrency.test.js
+!tests/session-core-pagehide.test.js
+scripts/
+!scripts/
+scripts/*
+!scripts/public-pages-deployment.js
+!scripts/check-public-pages-deployment.js
+!scripts/check-resume-build-trigger-quota.js
+!scripts/resolve-semver-version.js
+!scripts/stamp-release-version.js
+!scripts/verify-release-version.js
+!scripts/prepare-pages-assets.js
+node_modules/
+/supabase/.branches/
+/supabase/.temp/

@@ -1,0 +1,16 @@
+{
+  "name": "mrh-reviewer-pdf-browser-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@cantoo/fontkit": "2.0.12",
+    "@cantoo/pdf-lib": "2.11.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

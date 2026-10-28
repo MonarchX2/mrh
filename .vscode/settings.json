@@ -1,0 +1,11 @@
+{
+  "liveServer.settings.port": 5501,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "index.html": "404.html, client-update-required.html, manifest.json, version.json, icon.svg",
+    "package.json": "package-lock.json",
+    "vendor/pdfjs/pdfjs-5.4.394.min.mjs": "pdfjs-5.4.394.worker.min.mjs, pdfjs-5.4.394-LICENSE.md",
+    "frontend/css/tailwind.config.js": "tailwind.input.css, tailwind.generated.css"
+  }
+}
