@@ -1,13 +1,22 @@
-/app-entry.3c75865488a10a0a.js
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  X-Frame-Options: SAMEORIGIN
+
+/app-entry.83d77e54fd3aa5fa.js
   Cache-Control: public, max-age=31536000, immutable
 
-/frontend/css/styles.c9d2bae50beeb618.css
+/assets/icon.c2ea557c7843a8ad.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+/frontend/css/styles.541f2417b2ab8f95.css
   Cache-Control: public, max-age=31536000, immutable
 
 /frontend/css/tailwind.generated.06b0402225aa1493.css
   Cache-Control: public, max-age=31536000, immutable
 
-/frontend/js/analytics-core.6c6f4776f97d47f4.js
+/frontend/js/analytics-core.e771e75c55f8e7be.js
   Cache-Control: public, max-age=31536000, immutable
 
 /frontend/js/debug-utils.27b8974bd53f1df7.js
@@ -16,19 +25,19 @@
 /frontend/js/deck-review-core.01ee4e5ba9719d77.js
   Cache-Control: public, max-age=31536000, immutable
 
+/frontend/js/fsrs-core.cfe04c9460bfeb8d.js
+  Cache-Control: public, max-age=31536000, immutable
+
 /frontend/js/idb-keyval.912e015ef47f04b8.js
   Cache-Control: public, max-age=31536000, immutable
 
-/frontend/js/mrh-startup-core.ca81abb2e44ddc1e.js
+/frontend/js/mrh-startup-core.11497ce7f9d6066b.js
   Cache-Control: public, max-age=31536000, immutable
 
-/frontend/js/quiz-rendering-core.2e6344074c6db995.js
+/frontend/js/quiz-rendering-core.f112babd8d3a8259.js
   Cache-Control: public, max-age=31536000, immutable
 
-/frontend/js/session-core.0e2c7468539279c2.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/icon.c2ea557c7843a8ad.svg
+/frontend/js/session-core.047235718eeb84f4.js
   Cache-Control: public, max-age=31536000, immutable
 
 /reviewer-pdf-service/reviewer-pdf-worker.554943022294c245.js
@@ -163,11 +172,11 @@
 /vendor/*
   Cache-Control: public, max-age=31536000, immutable
 
-/icon-192.png
+/assets/icon-192.png
   Cache-Control: public, max-age=86400
 
-/icon-512.png
+/assets/icon-512.png
   Cache-Control: public, max-age=86400
 
-/og-image.png
+/assets/og-image.png
   Cache-Control: public, max-age=86400
