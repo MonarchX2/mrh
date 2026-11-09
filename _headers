@@ -4,13 +4,13 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
   X-Frame-Options: SAMEORIGIN
 
-/app-entry.1c77fb154aaf46ac.js
+/app-entry.aac842b5c0ca2de8.js
   Cache-Control: public, max-age=31536000, immutable
 
 /assets/icon.c2ea557c7843a8ad.svg
   Cache-Control: public, max-age=31536000, immutable
 
-/frontend/css/styles.a11edefe9fa8c774.css
+/frontend/css/styles.423130deb9166c9c.css
   Cache-Control: public, max-age=31536000, immutable
 
 /frontend/css/tailwind.generated.06b0402225aa1493.css
@@ -31,7 +31,7 @@
 /frontend/js/idb-keyval.912e015ef47f04b8.js
   Cache-Control: public, max-age=31536000, immutable
 
-/frontend/js/mrh-startup-core.477c10d230b9fa6d.js
+/frontend/js/mrh-startup-core.ba7fb64500385e67.js
   Cache-Control: public, max-age=31536000, immutable
 
 /frontend/js/quiz-rendering-core.f112babd8d3a8259.js
