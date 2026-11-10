@@ -6,169 +6,19 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-src blob: https://accounts.google.com https://drive.google.com https://docs.google.com; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' https: data: blob:; font-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com https://docs.google.com https://accounts.google.com https://dzqamorxorgeeyxklips.supabase.co; worker-src 'self' blob:
 
-/app-entry.82d6e49214cea859.js
+/frontend/js/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/frontend/css/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/reviewer-pdf-service/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/app-entry.626db65bd094c75c.js
   Cache-Control: public, max-age=31536000, immutable
 
 /assets/icon.c2ea557c7843a8ad.svg
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/css/styles.dc11e52886e342dd.css
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/css/tailwind.generated.876584d9c209184a.css
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/js/analytics-core.b2ff5b31aaaeddc2.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/js/debug-utils.27b8974bd53f1df7.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/js/deck-review-core.53b7432cb9efee61.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/js/fsrs-core.cfe04c9460bfeb8d.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/js/idb-keyval.912e015ef47f04b8.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/js/mrh-startup-core.a8a3fcc2671a2277.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/js/quiz-rendering-core.f112babd8d3a8259.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/frontend/js/session-core.ce90a099177e77cb.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/reviewer-pdf-worker.554943022294c245.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/cantoo-pdf-lib-2.11.1.min.3d82a0cea6c52dea.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/runtime/reviewer-pdf-bidi-1.1.0.min.a6416081a6201d68.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/runtime/reviewer-pdf-fontkit-2.0.12.min.7cbca2b588e8d1a3.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/runtime/reviewer-pdf-regenerator-runtime-0.14.1.a1cbd1b1e4f23f8c.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-arabic.945d6cb78a4cba57.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-arabicSymbols.c3e904e7e54bae30.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-armenian.0df4189dfaf56647.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-bengali.6ccd005fe19821e2.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-chineseSimplified.7303039bd1b10a24.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-cyrillic.408b79a0c5243614.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-cyrillicExt.cb36948f3e2ce5b4.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-devanagari.f7b3d94477dab2c4.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-ethiopic.c10cecc14b73d961.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-georgian.41f0f9e89d959062.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-greek.00f801faf083b936.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-greekExt.02de7b0ce57faa8c.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-gujarati.16135b839f412421.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-gurmukhi.10d5c2f567a1167c.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-hebrew.2ec30c32e1cb9c97.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-japanese.2401e8cb929de3ec.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-kannada.2849d38573ac3c95.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-khmer.01c36bc08c54d598.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-korean.cd23d02725a92cdc.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-lao.d28ca0d7d3054166.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-latin.a68070f2884104ce.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-latinExt.2ac2bec8d86aa1fd.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-malayalam.283ce58afe6c2dc8.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-myanmar.47d6f15b3b3d28e9.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-oriya.3d3d6bbcb65a311b.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-symbols.94864ffbded7b9b3.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-symbols2.44ce4c0ce2bcdbaf.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-tamil.af9219e2c504c836.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-telugu.f997ac09ba31d11f.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-thai.8d9b63d366d70db5.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-traditionalChinese.c4c63d79df83c50c.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/reviewer-pdf-service/vendor/watermark-fonts/reviewer-pdf-watermark-font-vietnamese.8454df5305ff58af.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/vendor/chartjs/4.4.4/chart.umd.min.32ae2a80d76802a7.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/vendor/fontawesome/6.4.0/css/all.min.b8cdad0f802289e3.css
-  Cache-Control: public, max-age=31536000, immutable
-
-/vendor/katex/0.16.8/dist/katex.min.64b09d5c25fb945f.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/vendor/katex/0.16.8/dist/katex.min.ace271bbdd07a309.css
-  Cache-Control: public, max-age=31536000, immutable
-
-/vendor/pdfjs/pdfjs-5.4.394.min.32b886286af97ee7.mjs
-  Cache-Control: public, max-age=31536000, immutable
-
-/vendor/pdfjs/pdfjs-5.4.394.worker.min.d308bfa143e6d54d.mjs
   Cache-Control: public, max-age=31536000, immutable
 
 /vendor/*
