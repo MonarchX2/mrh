@@ -4,7 +4,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
   X-Frame-Options: SAMEORIGIN
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-src blob: https://accounts.google.com https://drive.google.com https://docs.google.com; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' https: data: blob:; font-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com https://docs.google.com https://accounts.google.com https://dzqamorxorgeeyxklips.supabase.co; worker-src 'self' blob:
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-src blob: https://accounts.google.com https://drive.google.com https://docs.google.com; form-action 'self'; script-src 'self' 'unsafe-eval' blob: https://accounts.google.com/gsi/client 'sha256-McAyaUeQutluKRHEXy1aSdN7A+Aybp4J4O6RyW8CGf0=' 'sha256-STkYU61ZpwxONVY1YTb+5XDZ8U5NvvNsE5gAoxtDLgM=' 'sha256-qgibt0JBRZXluh2mVo7sjaxz9UcOZ/FVidBzs9bGTuQ=' 'sha256-ChL+mXNTGi0pHPvbUt28JxicMFFwoBpkn51TUy4X9m0=' 'sha256-mRkQK0yp2q+XqtHZ5QnZK+AnlV5Z38IYHaK+/KsawAA=' 'sha256-NYw3D/bDFUjr9xxgromk6PzPruCDyxDBBgwaJ2RPOSQ=' 'sha256-ABc6SUA4kbwenvsk27CNviCP3HhJDZ5/pE7tYmZVeRk=' 'sha256-4NCEXWJvVn68H/mz622eRV55GEJpJmKO1MwukO2oWdg=' 'sha256-eGDhIc1VzSDHmeFOP5ovSUOiv9liwFJ/tgwzgJ2sI94=' 'sha256-ymM44zuv5Ep2MvFh+w2U2szxl8VNW3spgtwDdf0yhwg='; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' https: data: blob:; font-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com https://docs.google.com https://accounts.google.com https://dzqamorxorgeeyxklips.supabase.co; worker-src 'self' blob:
 
 /frontend/js/*
   Cache-Control: public, max-age=31536000, immutable
@@ -15,7 +15,7 @@
 /reviewer-pdf-service/*
   Cache-Control: public, max-age=31536000, immutable
 
-/app-entry.626db65bd094c75c.js
+/app-entry.828d5d695421d950.js
   Cache-Control: public, max-age=31536000, immutable
 
 /assets/icon.c2ea557c7843a8ad.svg

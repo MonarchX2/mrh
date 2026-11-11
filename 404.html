@@ -1,1 +1,175 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#020b1a"><title>Loading Maritime Review Hub</title><script>!function(){let e="";try{const t=document.cookie.match(/(?:^|;\s*)mrh_theme=([^;]+)/);e=t?decodeURIComponent(t[1]):""}catch(e){}const t="light"!==e,c=document.documentElement;c.classList.toggle("dark",t),c.style.colorScheme=t?"dark":"light";const o=document.querySelector('meta[name="theme-color"]');o&&(o.content=t?"#020b1a":"#f8fafc")}()</script><style>:root{color-scheme:dark;font-family:ui-sans-serif,system-ui,sans-serif;background:#020b1a;color:#e5e7eb}html:not(.dark){color-scheme:light;background:#f8fafc;color:#1f2937}body{display:grid;box-sizing:border-box;min-height:100vh;margin:0;padding:1.5rem;place-items:center}p{max-width:34rem;line-height:1.6}.loader-wrap{display:grid;gap:1rem;justify-items:center}.loader{width:2rem;height:2rem;border:3px solid currentColor;border-right-color:transparent;border-radius:50%;animation:mrh-404-spin .8s linear infinite}@keyframes mrh-404-spin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.loader{animation:none}}</style><div class="loader-wrap"><div class="loader" role="status" aria-label="Loading"></div><p>Loading Maritime Review Hub...</div><script>!async function(){"use strict";const e=window.location.pathname.split("/").filter(Boolean),t=[];window.location.hostname.endsWith(".github.io")&&e.length>1&&t.push(1);for(let o=e.length;o>=0;o--)t.includes(o)||t.push(o);const o=t.map(t=>{const o=e.slice(0,t);return{baseLength:t,basePath:`/${o.join("/")}${o.length?"/":""}`}});for(const t of o)try{const o=new URL(`${t.basePath}index.html`,window.location.origin);o.search=window.location.search;const n=await fetch(o.href,{cache:"no-store"});if(!n.ok)continue;const a=await n.text(),i=e.slice(t.baseLength).map(e=>decodeURIComponent(e.replace(/\+/g," "))),l=window.location.hash.startsWith("#/")?window.location.hash.slice(2).split("/").filter(Boolean).map(e=>decodeURIComponent(e.replace(/\+/g," "))):[],c=i.length?i:l,s=new URLSearchParams(window.location.search),r=s.get("mrhRoute"),h=window.location.search.replace(/^\?/,"").split("&",1)[0],d=null!==r?r:h&&!h.includes("=")?h:null,p=d?d.split("/").filter(Boolean).map(e=>decodeURIComponent(e.replace(/\+/g," "))):[],w=c.length?c:p;if(null!==r)s.delete("mrhRoute");else if(h&&!h.includes("=")){const e=new URLSearchParams(h).keys().next().value;e&&s.delete(e)}const m=s.toString(),u=[null===r||i.length?"":p.map(e=>encodeURIComponent(e).replace(/%20/g,"+")).join("/"),...m.split("&").filter(Boolean)].filter(Boolean);(c.length||null!==d)&&window.history.replaceState({...window.history.state&&"object"==typeof window.history.state?window.history.state:{},mrhPath:w},"",`${window.location.pathname}${u.length?`?${u.join("&")}`:""}`);const g=`<base href="${t.basePath}">`,f=a.replace(/<head(?:\s[^>]*)?>/i,e=>`${e}${g}`),y=f===a?a.replace(/<html(?:\s[^>]*)?>/i,e=>`${e}<head>${g}`):f;if(y===a)throw new Error("Application entry point has no HTML root element.");return document.open(),document.write(y),void document.close()}catch(e){console.warn("Unable to load application entry point.",e)}document.body.innerHTML="<p>Unable to load Maritime Review Hub. Please check your connection and try again.</p>"}()</script>
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#020b1a"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-src blob: https://accounts.google.com https://drive.google.com https://docs.google.com; form-action 'self'; script-src 'self' 'unsafe-eval' blob: https://accounts.google.com/gsi/client 'sha256-Z5N4hFYmqMNXpGpg7s9AI85RN064y5kB8fQ9D4Of/9s=' 'sha256-5QjpkAja9BVPt79CGvK0oAm8cVqD0udR6ZgYUyStIAE=' 'sha256-McAyaUeQutluKRHEXy1aSdN7A+Aybp4J4O6RyW8CGf0=' 'sha256-STkYU61ZpwxONVY1YTb+5XDZ8U5NvvNsE5gAoxtDLgM=' 'sha256-qgibt0JBRZXluh2mVo7sjaxz9UcOZ/FVidBzs9bGTuQ=' 'sha256-ChL+mXNTGi0pHPvbUt28JxicMFFwoBpkn51TUy4X9m0=' 'sha256-mRkQK0yp2q+XqtHZ5QnZK+AnlV5Z38IYHaK+/KsawAA=' 'sha256-NYw3D/bDFUjr9xxgromk6PzPruCDyxDBBgwaJ2RPOSQ=' 'sha256-ABc6SUA4kbwenvsk27CNviCP3HhJDZ5/pE7tYmZVeRk=' 'sha256-4NCEXWJvVn68H/mz622eRV55GEJpJmKO1MwukO2oWdg=' 'sha256-eGDhIc1VzSDHmeFOP5ovSUOiv9liwFJ/tgwzgJ2sI94=' 'sha256-ymM44zuv5Ep2MvFh+w2U2szxl8VNW3spgtwDdf0yhwg='; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' https: data: blob:; font-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com https://docs.google.com https://accounts.google.com https://dzqamorxorgeeyxklips.supabase.co; worker-src 'self' blob:"><title>Loading Maritime Review Hub</title><script>(function () {
+        let themeValue = "";
+        try {
+          const match = document.cookie.match(/(?:^|;\s*)mrh_theme=([^;]+)/);
+          themeValue = match ? decodeURIComponent(match[1]) : "";
+        } catch (error) {}
+
+        const darkMode = themeValue !== "light";
+        const root = document.documentElement;
+        root.classList.toggle("dark", darkMode);
+        root.style.colorScheme = darkMode ? "dark" : "light";
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+        if (themeColor) {
+          themeColor.content = darkMode ? "#020b1a" : "#f8fafc";
+        }
+      })();</script><style>:root{color-scheme:dark;font-family:ui-sans-serif,system-ui,sans-serif;background:#020b1a;color:#e5e7eb}html:not(.dark){color-scheme:light;background:#f8fafc;color:#1f2937}body{display:grid;box-sizing:border-box;min-height:100vh;margin:0;padding:1.5rem;place-items:center}p{max-width:34rem;line-height:1.6}.loader-wrap{display:grid;gap:1rem;justify-items:center}.loader{width:2rem;height:2rem;border:3px solid currentColor;border-right-color:transparent;border-radius:50%;animation:mrh-404-spin .8s linear infinite}@keyframes mrh-404-spin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.loader{animation:none}}</style><div class="loader-wrap"><div class="loader" role="status" aria-label="Loading"></div><p>Loading Maritime Review Hub...</div><script>(async function () {
+        "use strict";
+
+        const pathSegments = window.location.pathname
+          .split("/")
+          .filter(Boolean);
+        const baseLengths = [];
+
+        // GitHub Pages project sites use the first path segment as their app base.
+        if (
+          window.location.hostname.endsWith(".github.io") &&
+          pathSegments.length > 1
+        ) {
+          baseLengths.push(1);
+        }
+        for (
+          let baseLength = pathSegments.length;
+          baseLength >= 0;
+          baseLength--
+        ) {
+          if (baseLengths.includes(baseLength)) continue;
+          baseLengths.push(baseLength);
+        }
+
+        const candidates = baseLengths.map((baseLength) => {
+          const baseSegments = pathSegments.slice(0, baseLength);
+          const basePath = `/${baseSegments.join("/")}${baseSegments.length ? "/" : ""}`;
+          return { baseLength, basePath };
+        });
+
+        for (const candidate of candidates) {
+          try {
+            const candidateUrl = new URL(
+              `${candidate.basePath}index.html`,
+              window.location.origin,
+            );
+            candidateUrl.search = window.location.search;
+            const response = await fetch(candidateUrl.href, {
+              cache: "no-store",
+            });
+            if (!response.ok) continue;
+
+            const appHtml = await response.text();
+            const routeSegments = pathSegments
+              .slice(candidate.baseLength)
+              .map((segment) =>
+                decodeURIComponent(segment.replace(/\+/g, " ")),
+              );
+            const legacyHashRoute = window.location.hash.startsWith("#/")
+              ? window.location.hash
+                  .slice(2)
+                  .split("/")
+                  .filter(Boolean)
+                  .map((segment) =>
+                    decodeURIComponent(segment.replace(/\+/g, " ")),
+                  )
+              : [];
+            const navigationSegments = routeSegments.length
+              ? routeSegments
+              : legacyHashRoute;
+            const searchParams = new URLSearchParams(
+              window.location.search,
+            );
+            const legacyQueryRoute = searchParams.get("mrhRoute");
+            const rawQueryRoute = window.location.search
+              .replace(/^\?/, "")
+              .split("&", 1)[0];
+            const queryRoute =
+              legacyQueryRoute !== null
+                ? legacyQueryRoute
+                : rawQueryRoute && !rawQueryRoute.includes("=")
+                  ? rawQueryRoute
+                  : null;
+            const querySegments = queryRoute
+              ? queryRoute
+                  .split("/")
+                  .filter(Boolean)
+                  .map((segment) =>
+                    decodeURIComponent(segment.replace(/\+/g, " ")),
+                  )
+              : [];
+            const restoredSegments = navigationSegments.length
+              ? navigationSegments
+              : querySegments;
+            if (legacyQueryRoute !== null) {
+              searchParams.delete("mrhRoute");
+            } else if (rawQueryRoute && !rawQueryRoute.includes("=")) {
+              const bareRouteKey = new URLSearchParams(rawQueryRoute)
+                .keys()
+                .next().value;
+              if (bareRouteKey) searchParams.delete(bareRouteKey);
+            }
+            const remainingSearch = searchParams.toString();
+            const migratedQuery =
+              legacyQueryRoute !== null && !routeSegments.length
+                ? querySegments
+                    .map((segment) =>
+                      encodeURIComponent(segment).replace(/%20/g, "+"),
+                    )
+                    .join("/")
+                : "";
+            const queryParts = [
+              migratedQuery,
+              ...remainingSearch.split("&").filter(Boolean),
+            ].filter(Boolean);
+            if (navigationSegments.length) {
+              window.history.replaceState(
+                {
+                  ...(window.history.state &&
+                  typeof window.history.state === "object"
+                    ? window.history.state
+                    : {}),
+                  mrhPath: restoredSegments,
+                },
+                "",
+                `${window.location.pathname}${queryParts.length ? `?${queryParts.join("&")}` : ""}`,
+              );
+            } else if (queryRoute !== null) {
+              window.history.replaceState(
+                {
+                  ...(window.history.state &&
+                  typeof window.history.state === "object"
+                    ? window.history.state
+                    : {}),
+                  mrhPath: restoredSegments,
+                },
+                "",
+                `${window.location.pathname}${queryParts.length ? `?${queryParts.join("&")}` : ""}`,
+              );
+            }
+            const baseElement = `<base href="${candidate.basePath}">`;
+            const appHtmlWithBase = appHtml.replace(
+              /<head(?:\s[^>]*)?>/i,
+              (head) => `${head}${baseElement}`,
+            );
+            const appHtmlWithFallbackBase =
+              appHtmlWithBase === appHtml
+                ? appHtml.replace(
+                    /<html(?:\s[^>]*)?>/i,
+                    (html) => `${html}<head>${baseElement}`,
+                  )
+                : appHtmlWithBase;
+            if (appHtmlWithFallbackBase === appHtml) {
+              throw new Error(
+                  "Application entry point has no HTML root element.",
+              );
+            }
+
+            document.open();
+            document.write(appHtmlWithFallbackBase);
+            document.close();
+            return;
+          } catch (error) {
+            console.warn("Unable to load application entry point.", error);
+          }
+        }
+
+        document.body.innerHTML =
+          "<p>Unable to load Maritime Review Hub. Please check your connection and try again.</p>";
+      })();</script>
